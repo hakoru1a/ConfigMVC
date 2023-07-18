@@ -4,17 +4,22 @@
  */
 package com.social.configs;
 
+import java.util.Locale;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 /**
  *
@@ -25,10 +30,6 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableTransactionManagement
 @ComponentScan(basePackages = {
     "com.social"
-//    "com.social.apis",
-//    "com.social.controllers",
-//    "com.dxhh.repositories",
-//    "com.dxhh.services"
 })
 public class WebApplicationContextConfig implements WebMvcConfigurer {
 
@@ -37,32 +38,32 @@ public class WebApplicationContextConfig implements WebMvcConfigurer {
         configurer.enable();
     }
 
-//    @Bean
-//    public InternalResourceViewResolver viewResolver() {
-//        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-//        resolver.setViewClass(JstlView.class);
-//        resolver.setPrefix("/WEB-INF/pages/");
-//        resolver.setSuffix(".jsp");
-//        return resolver;
-//    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/vendor/**").addResourceLocations("/resources/vendor/");
         registry.addResourceHandler("/css/**").addResourceLocations("/resources/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/resources/js/");
 //        registry.addResourceHandler("/img/**").addResourceLocations("/resources/img/");
-        
+
         registry.addResourceHandler("/swagger-ui/**")
-                    .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
-                    .resourceChain(false);
+                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
+                .resourceChain(false);
+    }
+
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("lang");
+        registry.addInterceptor(localeChangeInterceptor).addPathPatterns("/**");
     }
     
-    //multipart file
     @Bean
-    public CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setDefaultEncoding("UTF-8");
-        return resolver;
+    public MessageSource messageSource() {
+        ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+        source.setBasenames("messages/messages");
+        source.setDefaultEncoding("UTF-8");
+        return source;
     }
+
 }
