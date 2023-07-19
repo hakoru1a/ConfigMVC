@@ -39,7 +39,7 @@ public class InternatinonalConfig implements WebMvcConfigurer {
 
         // Đọc vào file i18n/messages_xxx.properties
         // Ví dụ: i18n/messages_en.properties
-        messageResource.setBasenames("i18n/i18n");
+        messageResource.setBasenames("messages/messages");
         messageResource.setDefaultEncoding("UTF-8");
         return messageResource;
     }
@@ -47,7 +47,7 @@ public class InternatinonalConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         LocaleChangeInterceptor localeInterceptor = new LocaleChangeInterceptor();
-        localeInterceptor.setParamName("language");
+        localeInterceptor.setParamName("lang");
         registry.addInterceptor(localeInterceptor).addPathPatterns("/**");
     }
 }

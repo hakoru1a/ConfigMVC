@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] AUTH_BLACKLIST = {
-        "/api/**" // Các route không yêu cầu xác thực
+//        "/api/**" // Các route không yêu cầu xác thực
     };
 
     @Bean
